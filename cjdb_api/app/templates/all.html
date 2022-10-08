@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All CityJSON objects</title>
+</head>
+<body>
+<h1>All CityJSON Objects</h1>
+    <table>
+        <tr>{% for header in headings %}
+            <th>{{ header}}</th>
+            {% endfor %}
+        </tr>
+        {% for row in data%}
+        <tr>
+            {% for cell in row %}
+            <td>{{ cell }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
