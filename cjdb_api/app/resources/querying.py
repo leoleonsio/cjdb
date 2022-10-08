@@ -13,12 +13,19 @@ class all(Resource):
     @classmethod
     def get(cls):
         all = session.query(CjObjectModel).all()
+        parse = cityjson_list_schema.dump(all)
+
+        # extract data
+        headings = list(parse[0].keys())
+        data = []
+        for item in parse:
+            data.append(list(item.values()))
 
         if not all:
             return {"message": "Object not found"}, 404
 
-        return cityjson_list_schema.dump(all)
-
+        return make_response(render_template("all.html", headings=headings, data=data))
+    
 ##Get all the information of an object, given a certain value: So for instance, select building with object_id NL.IMBAG.Pand.0518100000213709-0, or select building with id 2
 class QueryByAttribute(Resource):
     @classmethod
