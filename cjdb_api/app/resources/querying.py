@@ -1,5 +1,5 @@
 from flask_restful import Resource
-from flask import Flask, render_template, make_response, url_for, request, redirect
+from flask import render_template, make_response
 from model.sqlalchemy_models import CjObjectModel
 from cjdb_api.app.schemas import CityJsonSchema
 from cjdb_api.app.db import session, engine
@@ -78,10 +78,10 @@ class CalculateFootprint(Resource):
             return {"message": "Object not found"}, 404
 
         with engine.connect() as connection:
-            area_pointer = connection.execute(cj_object.bbox.ST_Area())
+            area_conn = connection.execute(cj_object.bbox.ST_Area())
             # the pointer is "<sqlalchemy.engine.cursor.LegacyCursorResult object at 0x000002322DFAA2B0>" 
             
-            for row in area_pointer:
+            for row in area_conn:
                 area = row[0]
 
             if not area:
