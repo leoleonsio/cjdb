@@ -69,7 +69,6 @@ class FilterAttributes(Resource):
         return cityjson_list_schema.dump(cj_object)
 
 
-##in progress
 class CalculateFootprint(Resource):
     @classmethod
     def get(cls, object_id: str):
@@ -79,15 +78,19 @@ class CalculateFootprint(Resource):
             return {"message": "Object not found"}, 404
 
         with engine.connect() as connection:
-            area = connection.execute(cj_object.bbox.ST_Area())
+            area_pointer = connection.execute(cj_object.bbox.ST_Area())
+            # the pointer is "<sqlalchemy.engine.cursor.LegacyCursorResult object at 0x000002322DFAA2B0>" 
+            
+            for row in area_pointer:
+                area = row[0]
 
             if not area:
                 return {"message": "Object not found"}, 404
-            print(area) # outputs: "<sqlalchemy.engine.cursor.LegacyCursorResult object at 0x000002322DFAA2B0>" But want to have the area
 
-        return ("area")
+        return area
 
 
+##in progress
 class AddAttribute(Resource):
     @classmethod
     def get(cls):
