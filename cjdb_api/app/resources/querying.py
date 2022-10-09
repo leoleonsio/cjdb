@@ -7,6 +7,15 @@ from sqlalchemy.sql import text
 cityjson_schema = CityJsonSchema()
 cityjson_list_schema = CityJsonSchema(many=True)
 
+def parse_table(parse):
+    # convert cityjson schema to a list of headers and a list of lists of values
+    headings = list(parse[0].keys())
+    data = []
+    for item in parse:
+        data.append(list(item.values()))
+       
+    return headings, data
+    
 ##working
 
 #Select all objects in the database
@@ -14,13 +23,7 @@ class all(Resource):
     @classmethod
     def get(cls):
         all = session.query(CjObjectModel).all()
-        parse = cityjson_list_schema.dump(all)
-
-        # extract data
-        headings = list(parse[0].keys())
-        data = []
-        for item in parse:
-            data.append(list(item.values()))
+        headings, data = parse_table(cityjson_list_schema.dump(all))
 
         if not all:
             return {"message": "Object not found"}, 404
